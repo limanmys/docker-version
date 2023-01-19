@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: liman-db
+    restart: always
+    environment:
+      - POSTGRES_USER=liman
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=liman
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+    networks:
+      - liman-net
+  limancore:
+    image: limancore:master
+    environment:
+      - DB_PASS=${DB_PASS}
+    container_name: liman-core
+    tty: true
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      - liman-net
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  liman-net:
+    driver: bridge
