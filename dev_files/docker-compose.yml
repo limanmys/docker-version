@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   limancore:
-    image: limanmys/core:latest
+    image: limancore:dev
     restart: always
     environment:
       # Redis settings
@@ -9,7 +9,6 @@ services:
       - REDIS_PASS=${DB_PASS}
       - REDIS_PORT=6379
       # DB settings
-      # For using Patroni or another Postgresql Cluster
       - DB_HOST=liman-db
       - DB_DATABASE=liman
       - DB_USERNAME=liman
@@ -28,7 +27,6 @@ services:
       - liman-net
     dns:
       - 127.0.0.1
-      # Add active directory DNS(s) for using Domain extension and LDAP on Liman
   db:
     image: postgres:15
     container_name: liman-db
@@ -52,7 +50,7 @@ services:
     networks:
       - liman-net
   webssh:
-    image: limanmys/webssh:latest
+    image: limancore:webssh
     restart: always
     container_name: liman-webssh
     networks:

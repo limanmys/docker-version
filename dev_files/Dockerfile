@@ -1,4 +1,4 @@
-# LIMAN DOCKERFILE
+# LIMAN DOCKERFILE <DEV VERSION>
 # AUTHOR: Doğukan Öksüz <dogukan@liman.dev>
 
 FROM ubuntu:jammy
@@ -22,38 +22,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt -yqq install sudo wget curl gpg zip unzip
 RUN bash -c 'mkdir -p /liman_files/{server,certs,logs,database,sandbox,keys,extensions,modules,packages}'
 
 # CORE
-RUN wget "https://github.com/limanmys/core/archive/refs/heads/feature-docker.zip" -O "core.zip"
-RUN unzip -qq core.zip
-RUN mv core-feature-docker/* /liman_files/server
-RUN mv core-feature-docker/.env.example /liman_files/server
-RUN rm -rf core.zip
+COPY core /liman_files/server
 
 # PHP SANDBOX
-RUN wget "https://github.com/limanmys/php-sandbox/archive/refs/heads/master.zip" -O "sandbox.zip"
-RUN unzip -qq sandbox.zip
-RUN mkdir -p /liman_files/sandbox/php
-RUN mv php-sandbox-master/* /liman_files/sandbox/php/
-RUN rm -rf sandbox.zip php-sandbox-master
-
-# EXT TEMPLATES
-RUN wget "https://github.com/limanmys/extension_templates/archive/master.zip" -O "extension_templates.zip"
-RUN unzip -qq extension_templates.zip
-RUN mkdir -p /liman_files/server/storage/extension_templates
-RUN mv extension_templates-master/* /liman_files/server/storage/extension_templates
-RUN rm -rf extension_templates.zip extension_templates-master
-
-# RENDER ENGINE
-RUN curl -s https://api.github.com/repos/limanmys/fiber-render-engine/releases/latest | grep "browser_download_url.*zip" | cut -d : -f 2,3 | tr -d \" | wget -qi -
-RUN unzip liman_render*.zip
-RUN mv liman_render /liman_files/server/storage/liman_render
-
-# COMPOSER
-RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN rm -rf composer-setup.php
-
-RUN composer install --no-dev --no-scripts -d /liman_files/server
-RUN composer install --no-dev -d /liman_files/sandbox/php
+RUN mkdir -p /liman_files/sandbox
+COPY php-sandbox /liman_files/sandbox/php
 
 # USERS
 RUN groupadd -g 2800 liman

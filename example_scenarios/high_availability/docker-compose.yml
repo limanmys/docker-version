@@ -1,26 +1,22 @@
 version: '3.8'
 services:
+  haproxy:
+    image: haproxy:alpine
+    container_name: liman-haproxy
+    build: ./haproxy
+    networks:
+      - liman-net
+    ports:
+      - '443:443'
   limancore:
-    image: limanmys/core:latest
-    restart: always
+    image: limancore:master
     environment:
-      # Redis settings
-      - REDIS_HOST=liman-redis
-      - REDIS_PASS=${DB_PASS}
-      - REDIS_PORT=6379
-      # DB settings
-      # For using Patroni or another Postgresql Cluster
-      - DB_HOST=liman-db
-      - DB_DATABASE=liman
-      - DB_USERNAME=liman
-      - DB_PORT=5432
       - DB_PASS=${DB_PASS}
-      # Nginx settings
-      - PORT=443
+      - PORT=4443
     container_name: liman-core
     tty: true
     ports:
-      - '443:443'
+      - '4443:4443'
     volumes: 
       - core:/liman
       - certs:/usr/local/share/ca-certificates
@@ -28,7 +24,24 @@ services:
       - liman-net
     dns:
       - 127.0.0.1
-      # Add active directory DNS(s) for using Domain extension and LDAP on Liman
+      - 10.151.43.42
+  limancore2:
+    image: limancore:master
+    environment:
+      - DB_PASS=${DB_PASS}
+      - PORT=4444
+    container_name: liman-core2
+    tty: true
+    ports:
+      - '4444:4444'
+    volumes: 
+      - core:/liman
+      - certs:/usr/local/share/ca-certificates
+    networks:
+      - liman-net
+    dns:
+      - 127.0.0.1
+      - 10.151.43.42
   db:
     image: postgres:15
     container_name: liman-db
@@ -52,8 +65,7 @@ services:
     networks:
       - liman-net
   webssh:
-    image: limanmys/webssh:latest
-    restart: always
+    image: liman:webssh
     container_name: liman-webssh
     networks:
       - liman-net
