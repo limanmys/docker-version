@@ -2,6 +2,9 @@ version: '3.8'
 services:
   limancore:
     image: limanmys/core:latest
+    depends_on:
+      - db
+      - redis
     restart: always
     environment:
       # Redis settings

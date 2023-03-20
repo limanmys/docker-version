@@ -2,6 +2,9 @@ version: '3.8'
 services:
   haproxy:
     image: haproxy:alpine
+    depends_on:
+      - limancore
+      - limancore2
     container_name: liman-haproxy
     build: ./haproxy
     networks:
@@ -10,6 +13,9 @@ services:
       - '443:443'
   limancore:
     image: limancore:master
+    depends_on:
+      - db
+      - redis
     environment:
       - DB_PASS=${DB_PASS}
       - PORT=4443
@@ -26,6 +32,9 @@ services:
       - 127.0.0.1
   limancore2:
     image: limancore:master
+    depends_on:
+      - db
+      - redis
     environment:
       - DB_PASS=${DB_PASS}
       - PORT=4444
