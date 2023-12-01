@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   limancore:
-    image: limanmys/core:latest
+    image: limanmys/core:next
     depends_on:
       db:
         condition: service_healthy
@@ -19,11 +19,12 @@ services:
       - DB_PORT=5432
       - DB_PASS=${DB_PASS}
       # Nginx settings
-      - PORT=443
+      - NGINX_PORT=443
     container_name: liman-core
     tty: true
     ports:
       - '443:443'
+      - '3000:3000'
     volumes: 
       - core:/liman
       - certs:/usr/local/share/ca-certificates
