@@ -79,7 +79,7 @@ sed -i "s/upload_max_filesize.*/upload_max_filesize = 100M/g" /etc/php/8.1/fpm/p
 
 # Dynamic nginx port
 sed -i "s/listen 443 ssl http2.*/listen ${NGINX_PORT} ssl http2;/g" /etc/nginx/sites-available/liman.conf
-sed -i "s/127.0.0.1:8888/liman-webssh:8888/g" /etc/nginx/sites-available/liman.conf
+#sed -i "s/127.0.0.1:8888/liman-webssh:8888/g" /etc/nginx/sites-available/liman.conf
 
 # Generate certificate variables if does not exist
 if [ -f "/liman/certs/liman.key" ]; then
