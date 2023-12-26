@@ -1,4 +1,4 @@
-# Liman MYS Docker Image
+# DEPRECATED ----- Liman MYS Docker Image
 
 This project is not tested yet but looks like works fine just for now.
 It utilizes Liman MYS services in Docker container and persists the data.
